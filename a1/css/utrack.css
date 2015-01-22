@@ -1,0 +1,34 @@
+/* Put any additional CSS here */
+.jumbotron {
+    margin-bottom: 5px;
+}
+
+#unit_tests {
+    margin-top: 30px;
+}
+
+#graph_options {
+    float: left;
+}
+
+#graph_options > div {
+    margin-bottom: 35px;
+}
+
+#graph_display {
+    float: left;
+    height: 350px;
+}
+
+#alert_div {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#input_div {
+    margin-bottom: 30px;
+}
+
+#meta_data {
+    margin-top: 10px;
+}
