@@ -1,0 +1,80 @@
+'use strict';
+
+/*
+   Put any interaction code here
+   */
+
+window.addEventListener('load', function() {
+    // You should wire up all of your event handling code here, as well as any
+    // code that initiates calls to manipulate the DOM (as opposed to responding
+    // to events)
+
+    // MODELS
+    var activityModel = new ActivityStoreModel();
+    var graphModel = new GraphModel();
+    var viewModel = new ViewModel(activityModel);
+
+    // MAIN DIVS
+    var analysis_div = document.getElementById('analysis_div');
+    var input_div    = document.getElementById('input_div');
+    analysis_div.style.display = 'none';
+
+    // RADIO BUTTONS
+    var radio_table = document.getElementById('radio_table');
+    var radio_scatter = document.getElementById('radio_scatter');
+
+    // CHECK BOXES
+    var check_stress = document.getElementById('check_stress');
+    var check_happiness = document.getElementById('check_happiness');
+    var check_energy = document.getElementById('check_energy');
+
+    // CLICKABLES
+    var input_link    = document.getElementById('input_link');
+    var analysis_link = document.getElementById('analysis_link');
+    var input_submit  = document.getElementById('input_submit');
+    var time_units    = document.getElementById('time_units');
+
+    time_units.addEventListener('click', function() {
+        viewModel.toggleUnits();
+    });
+    input_link.addEventListener('click', function() {
+        viewModel.showInput();
+    });
+    analysis_link.addEventListener('click', function() {
+        viewModel.showAnalysis();
+    });
+    input_submit.addEventListener('click', function() {
+        viewModel.submitData(activityModel);
+    });
+    radio_table.addEventListener('change', function() {
+        graphModel.selectGraph("tabular");
+    });
+    radio_scatter.addEventListener('change', function() {
+        graphModel.selectGraph("scatter");
+    });
+    check_stress.addEventListener('change', function() {
+        viewModel.toggleStress();
+    });
+    check_happiness.addEventListener('change', function() {
+        viewModel.toggleHappiness();
+    });
+    check_energy.addEventListener('change', function() {
+        viewModel.toggleEnergy();
+    });
+
+    graphModel.addListener(viewModel.toggleView);
+
+    activityModel.addListener(function() {
+        var no_data = document.getElementById('no_data');
+        no_data.style.display = "none";
+    });
+    activityModel.addListener(function() {
+        viewModel.createGraph();
+    });
+    activityModel.addListener(function() {
+        viewModel.createTable();
+    });
+    activityModel.addListener(function(ACTIVITY_DATA_ADDED_EVENT, time, activityData) {
+        viewModel.showTime(time);
+    });
+})

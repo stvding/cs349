@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>UTrack!</title>
+        <link rel="stylesheet" href="css/ext/bootstrap.css"/>
+        <link rel="stylesheet" href="css/utrack.css"/>
+    </head>
+    <body>
+
+        <div id="app_container" class="container">
+
+            <div class="jumbotron">
+                <h1>UTrack</h1>
+                <p>Track and analyze data that matters to you!</p>
+                <div id="unit_tests">
+                    <!-- Keep this here so TAs can run your unit tests -->
+                    <a href="unit_tests.html">Run Unit Tests</a>
+                </div>
+
+            </div>
+
+            <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li id="input_link" class="active" ><a href="javascript:;">Input</a></li>
+                        <li id="analysis_link"><a href="javascript:;">Analysis</a></li>
+                    </ul>
+                </div>
+            </div>
+            </nav>
+
+            <div id="input_div" class="form-horizontal">
+                <div class="form-group">
+                    <label for="activity" class="control-label col-sm-2">activity:</label>
+                    <div class="col-sm-10">
+                        <select id="activity" class="form-control">
+                            <option value="reading">Reading</option>
+                            <option value="coding">Writing code</option>
+                            <option value="sports">Playing sports</option>
+                            <option value="studying">Studying for exams</option>
+                            <option value="lectures">Attending lectures</option>
+                            <option value="watching TV">Watching TV</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="energy" class="control-label col-sm-2">energy level:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="energy" class="form-control" placeholder="1 = exhausted; 5 = bouncing off walls">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="stress" class="control-label col-sm-2">stress level:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="stress" class="form-control" placeholder="1 = very stressed; 5 = very relaxed">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="happiness" class="control-label col-sm-2">happiness level:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="happiness" class="form-control" placeholder="1 = depressed; 5 = very happy">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="time" class="control-label col-sm-2">time spent:</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="text" id="time" class="form-control" placeholder=30>
+                            <span class="input-group-btn">
+                                <button id="time_units" class="btn btn-default" type="button">minutes</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="alert_div"></div>
+                <button id="input_submit" type="submit" class="btn btn-primary">Submit</button>
+                <div id="meta_data">
+                    <p>No data recorded yet</p>
+                </div>
+            </div>
+
+            <div id="analysis_div">
+                <!-- Put HTML here to support users in analyzing their data -->
+
+                <div id="graph_options" class="col-md-4">
+
+                    <div id="view_options">
+                        <label>Views:</label>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadio" id="radio_table" value="table" checked>Table
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadio" id="radio_scatter" value="scatter">Scatter Plot
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="customize_options">
+                        <label>Customize:</label>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="check_energy" value="" checked>
+                                energy level <span style="color:orange">&#x25EF;</span>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="check_stress" value="" checked>
+                                stress level <span style="color:red">&#x25B3;</span>
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="check_happiness" value="" checked>
+                                happiness level <span style="color:green">&#x25A2;</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="graph_display" class="col-md-8">
+                    <div id="no_data">
+                        <p>Nothing to show here. Add some input!</p>
+                    </div>
+                    <canvas id="canvas_display" width= "600" height="300"></canvas>
+                    <table id="table_display" class="table"></table>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+
+
+        </div>
+
+        <script src="js/ext/underscore.js"></script>
+        <script src="js/model.js"></script>
+        <script src="js/view.js"></script>
+        <script src="js/utrack.js"></script>
+    </body>
+</html>

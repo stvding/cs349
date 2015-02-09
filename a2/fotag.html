@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>Fotag!</title>
+
+    <link rel="stylesheet" href="css/fotag.css"/>
+</head>
+<body>
+<div id="app-container">
+    <!--
+         An attachment point to place all of your dynamically created content. Do not remove or
+         rename this div.
+    -->
+</div>
+
+<!-- A template for a file chooser, to select multiple files. See FileChooser in view.js. -->
+<template id="file-chooser">
+    <div class="file-chooser">
+        <label class="label">Upload image:</label>
+        <label class="myLabel">
+            <input type="file" class="files-input" name="file_results[]" multiple />
+            <span>&#43;</span>
+        </label>
+    </div>
+</template>
+
+<template id="image-collection">
+    <div class="image-collection"></div>
+</template>
+
+<template id="image-renderer">
+    <div class="thumbnail"></div>
+    <div class="meta-data">
+        <div class="image-name"></div>
+        <div class="image-date"></div>
+        <div class="image-rating">
+            <span class="icon-star-empty"></span>
+            <span class="icon-star-empty"></span>
+            <span class="icon-star-empty"></span>
+            <span class="icon-star-empty"></span>
+            <span class="icon-star-empty"></span>
+        </div>
+    </div>
+</template>
+
+<template id="toolbar">
+    <div class="toolbar">
+        <div class="view-toggle">
+            <span class="icon-grid"></span>
+            <span class="icon-list disabled"></span>
+        </div>
+        <h1 class="logo">Fotag!</h1>
+        <div class="rating-filter">
+            <span class="icon-star-empty"></span>
+            <span class="icon-star-empty"></span>
+            <span class="icon-star-empty"></span>
+            <span class="icon-star-empty"></span>
+            <span class="icon-star-empty"></span>
+        </div>
+    </div>
+</template>
+
+<template id="modal">
+    <div class="modal">
+        <div class="insertscreen">
+        </div>
+    </div>
+</template>
+
+<!-- Keep this here so TAs can run your unit tests -->
+<div id="unit-tests">
+
+    <!-- This button is for marking purposes to test your architecture. Do not remove it-->
+    <a class="test-link" href="unit_tests.html">Run Unit Tests</a>
+    <button class="marking-button">Mark Me!</button>
+    <div class="marking-div-clear"></div>
+</div>
+
+<script src="js/ext/underscore.js"></script>
+<script src="js/model.js"></script>
+<script src="js/view.js"></script>
+<script src="js/fotag.js"></script>
+<script src="js/markers_code.js"></script>
+</body>
+</html>

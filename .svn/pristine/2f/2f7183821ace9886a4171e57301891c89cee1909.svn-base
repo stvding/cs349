@@ -1,0 +1,21 @@
+/* Put any additional CSS here */
+.jumbotron {
+    margin-bottom: 5px;
+}
+
+#unit_tests {
+    margin-top: 30px;
+}
+
+#graph_options {
+    float: left;
+}
+
+#graph_options > div {
+    margin-bottom: 35px;
+}
+
+#graph_display {
+    float: left;
+    height: 350px;
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Fotag!</title>
+
+    <link rel="stylesheet" href="css/fotag.css"/>
+    <style>
+        .marking-button {
+            float:right;
+        }
+        .marking-div-clear {
+            clear:both;
+        }
+    </style>
+</head>
+<body>
+<div id="app-container">
+    <!--
+         An attachment point to place all of your dynamically created content. Do not remove or
+         rename this div.
+    -->
+</div>
+
+<!-- A template for a file chooser, to select multiple files. See FileChooser in view.js. -->
+<template id="file-chooser">
+    <input type="file" class="files-input" name="file_results[]" multiple />
+    <output id="list"></output>
+</template>
+
+<template id="image-renderer">
+    <div class="thumbnail"></div>
+    <div class="meta-data"></div>
+</template>
+
+<template id="toolbar">
+    <div class="toolbar">
+        <div class="view-toggle">
+            <span class="icon-grid"></span>
+            <span class="icon-list"></span>
+        </div>
+        <h1 class="logo">Fotag!</h1>
+        <div class="rating-filter">
+            <span class="icon-star-empty star1"></span>
+            <span class="icon-star-empty star2"></span>
+            <span class="icon-star-empty star3"></span>
+            <span class="icon-star-empty star4"></span>
+            <span class="icon-star-empty star5"></span>
+        </div>
+    </div>
+</template>
+
+<!-- Keep this here so TAs can run your unit tests -->
+<div id="unit-tests">
+
+    <!-- This button is for marking purposes to test your architecture. Do not remove it-->
+    <button class="marking-button">Mark Me!</button>
+    <div class="marking-div-clear"></div>
+
+    <a href="unit_tests.html">Run Unit Tests</a>
+</div>
+
+<script src="js/ext/underscore.js"></script>
+<script src="js/model.js"></script>
+<script src="js/view.js"></script>
+<script src="js/fotag.js"></script>
+<script src="js/markers_code.js"></script>
+</body>
+</html>

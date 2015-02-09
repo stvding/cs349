@@ -1,0 +1,258 @@
+'use strict';
+
+var ViewModel = function(activityModel) {
+    this.activityModel = activityModel;
+    this.stress = true;
+    this.happiness = true;
+    this.energy = true;
+    this.units = 1; // MINUTES (60 is HOURS)
+
+    // INITIAL VIEW
+    var canvas = document.getElementById("canvas_display");
+    var options = document.getElementById("customize_options");
+    canvas.style.display = 'none';
+    options.style.display = 'none';
+};
+
+_.extend(ViewModel.prototype, {
+
+    toggleUnits: function() {
+        this.units = (this.units == 1) ? 60 : 1;
+        var time_units    = document.getElementById('time_units');
+        time_units.innerHTML = this.units == 1 ? "minutes" : "hours";
+    },
+    toggleStress: function() {
+        this.stress = !this.stress;
+        this.createGraph();
+    },
+    toggleHappiness: function() {
+        this.happiness = !this.happiness;
+        this.createGraph();
+    },
+    toggleEnergy: function() {
+        this.energy = !this.energy;
+        this.createGraph();
+    },
+
+    toggleView: function(GRAPH_SELECTED_EVENT, time, graphName) {
+        var canvas = document.getElementById("canvas_display");
+        var tabular = document.getElementById("table_display");
+        var options = document.getElementById("customize_options");
+
+        if (graphName == "tabular") {
+            canvas.style.display = 'none';
+            tabular.style.display = 'table';
+            options.style.display = 'none';
+        }
+        else {
+            canvas.style.display = 'block';
+            options.style.display = 'block';
+            tabular.style.display = 'none';
+        }
+    },
+
+    submitData: function() {
+
+        var activityName   = document.getElementById('activity').value;
+        var energyLevel    = document.getElementById('energy').value;
+        var stressLevel    = document.getElementById('stress').value;
+        var happinessLevel = document.getElementById('happiness').value;
+        var timeSpent      = document.getElementById('time').value * this.units;
+
+        var dataHash = {}
+
+        dataHash["energyLevel"]    = energyLevel;
+        dataHash["stressLevel"]    = stressLevel;
+        dataHash["happinessLevel"] = happinessLevel;
+
+        var errors = this.validateSubmit(activityName,
+                                         energyLevel,
+                                         stressLevel,
+                                         happinessLevel, timeSpent);
+
+        if (errors.length > 0) {
+            this.showErrors(errors);
+        }
+        else {
+            var dataPoint = new ActivityData(activityName, dataHash, timeSpent);
+            if (!this.activityModel.addActivityDataPoint(dataPoint)) {
+                this.showErrors(["Data point already exists"]);
+            }
+            else this.showSuccess();
+        }
+    },
+
+    showSuccess: function() {
+        var alert_div = document.getElementById("alert_div");
+        alert_div.innerHTML = "";
+        var success_div = document.createElement("div");
+        success_div.className = "alert alert-success";
+        success_div.innerHTML = "Activity successfully created!";
+        alert_div.appendChild(success_div);
+        setTimeout(function() {
+            alert_div.removeChild(success_div)
+        }, 1000);
+    },
+    showErrors: function(errors) {
+        var alert_div = document.getElementById("alert_div");
+        alert_div.innerHTML = "";
+        var error_div = document.createElement("div");
+        error_div.className = "alert alert-danger";
+        var list = document.createElement("ul");
+
+        _.each(errors, function(error, index) {
+            var item = document.createElement("li");
+            item.innerHTML = error;
+            list.appendChild(item);
+            console.log(error);
+        });
+        error_div.appendChild(list);
+        alert_div.appendChild(error_div);
+    },
+
+    validateSubmit: function(activityName, energyLevel, stressLevel, happinessLevel, timeSpent) {
+        var errors = [];
+        if (isNaN(energyLevel) || this.isBlank(energyLevel) || energyLevel < 1 || energyLevel > 5) {
+            errors.push("Energy Level must be a number between 1 and 5");
+        }
+        if (isNaN(stressLevel) || this.isBlank(stressLevel) || stressLevel < 1 || stressLevel > 5) {
+            errors.push("Stress Level must be a number between 1 and 5");
+        }
+        if (isNaN(happinessLevel) || this.isBlank(happinessLevel) || happinessLevel < 1 || happinessLevel > 5) {
+            errors.push("Happiness Level must be a number between 1 and 5");
+        }
+        if (isNaN(timeSpent) || this.isBlank(timeSpent)) {
+            errors.push("Time Spent must be a number");
+        }
+        return errors;
+    },
+
+    isBlank: function(string) {
+        return (!string || /^\s*$/.test(string));
+    },
+
+    createGraph: function() {
+        var canvas = document.getElementById("canvas_display");
+        var options = document.getElementById("customize_options");
+        var ctx = canvas.getContext('2d');
+        var height = canvas.height;
+        var width = canvas.width;
+        var bufferSouth = 30;
+        var bufferNorth = 5;
+        var bufferY = bufferSouth + bufferNorth;
+        var view = this;
+
+        ctx.beginPath();
+        ctx.rect(0, 0, width, height);
+        ctx.fillStyle = "#d3d3d3";
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+
+        var dataArray = this.activityModel.getActivityDataPoints();
+        var dataNum = dataArray.length;
+        var realHeight = height - bufferY;
+
+        _.each(dataArray, function(datapoint,index,list) {
+            var startX, startY;
+            startX = ( width / (dataNum+1) ) * (index + 1);
+            view.drawLabel(ctx, startX, height, datapoint.activityType);
+
+            // ENERGY LEVEL
+            if (view.energy) {
+                startY = (height - ((datapoint.activityDataDict.energyLevel-0.5) / 5) *
+                          realHeight) - bufferSouth;
+                view.drawEnergy(ctx, startX, startY);
+            }
+
+            // STRESS LEVEL
+            if (view.stress) {
+                startY = (height - ((datapoint.activityDataDict.stressLevel-0.5) / 5) *
+                          realHeight) - bufferSouth;
+                view.drawStress(ctx, startX, startY);
+            }
+
+            // HAPPINESS LEVEL
+            if (view.happiness) {
+                startY = (height - ((datapoint.activityDataDict.happinessLevel-0.5) / 5) *
+                          realHeight) - bufferSouth;
+                view.drawHappiness(ctx, startX, startY);
+            }
+        });
+    },
+
+    drawLabel: function(ctx, startX, startY, string) {
+        ctx.fillStyle = "#2E2E2E";
+        ctx.font="15px Georgia";
+        ctx.fillText(string, startX-25, startY-10);
+    },
+    drawEnergy: function(ctx, startX, startY) {
+        this.drawCircle(ctx, startX, startY, 15, 'orange');
+    },
+    drawStress: function(ctx, startX, startY) {
+        this.drawTriangle(ctx, startX, startY, 20, 'red');
+    },
+    drawHappiness: function(ctx, startX, startY) {
+        this.drawSquare(ctx, startX, startY, 15, 'green');
+    },
+    drawCircle: function(ctx, startX, startY, radius, colour) {
+        ctx.beginPath();
+        ctx.arc(startX, startY, radius, 0, 2*Math.PI);
+        ctx.strokeStyle = colour;
+        ctx.stroke();
+    },
+    drawSquare: function(ctx, startX, startY, size, colour) {
+        ctx.beginPath();
+        ctx.rect(startX-size/2, startY-size/2, size, size);
+        ctx.strokeStyle = colour;
+        ctx.stroke();
+    },
+    drawTriangle: function(ctx, startX, startY, height, colour) {
+        var angle = Math.PI/6.0;
+        var hyp = height / (2.0 * Math.cos(angle));
+        ctx.beginPath();
+        ctx.moveTo(startX, startY - height/2.0);
+        ctx.lineTo(startX - hyp, startY + height/2.0);
+        ctx.lineTo(startX + hyp, startY + height/2.0);
+        ctx.lineTo(startX, startY - height/2.0);
+        ctx.strokeStyle = colour;
+        ctx.stroke();
+    },
+    createTable: function() {
+        var tbl = document.getElementById('table_display');
+        tbl.innerHTML = "";
+        var row = tbl.insertRow(0);
+        var cell = row.appendChild(document.createElement("th"));
+        cell.innerHTML = "Activities you are tracking";
+        var cell = row.appendChild(document.createElement("th"));
+        cell.innerHTML = "Time spent (minutes)";
+
+        _.each(this.activityModel.getActivityDataPoints(), function(datapoint, index, list) {
+            row = tbl.insertRow(-1);
+            cell = row.insertCell(-1);
+            var text = document.createTextNode(datapoint.activityType);
+            cell.appendChild(text);
+
+            cell = row.insertCell(-1);
+            text = document.createTextNode(datapoint.activityDurationInMinutes);
+            cell.appendChild(text);
+        });
+        var display_div = document.getElementById('graph_display');
+        display_div.appendChild(tbl);
+    },
+
+    showInput: function() {
+        input_div.style.display = 'block';
+        analysis_div.style.display = 'none';
+        analysis_link.className = "";
+        input_link.className = "active";
+    },
+
+    showAnalysis: function() {
+        input_div.style.display = 'none';
+        analysis_div.style.display = 'block';
+        analysis_link.className = "active";
+        input_link.className = "";
+    },
+});
